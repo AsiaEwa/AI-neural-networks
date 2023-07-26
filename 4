@@ -1,0 +1,4 @@
+glnet = googlenet;
+classNames = glnet.Layers(end).ClassNames; 
+numClasses = numel(classNames); 
+disp(classNames(randperm(numClasses,10)))

@@ -1,0 +1,13 @@
+%wybranie po 2 przykładów z każdego typu cyfry
+%i sprawdzenie działania sieci
+[imds2img] = splitEachLabel(imds,2,'randomize');
+wynik2img = classify(net,imds2img);
+for i = 1:20
+ subplot(5,4,i);
+ imshow(imds2img.Files{i});
+ if wynik2img(i)~=imds2img.Labels(i)
+ text(0,-3,wynik2img(i),'Color','red');
+ else
+ text(0,-3,wynik2img(i));
+ end
+end

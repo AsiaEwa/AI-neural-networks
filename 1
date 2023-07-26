@@ -1,0 +1,32 @@
+silnikF = load('silnik_full.txt');
+silnikUcz = load('silnik_ucz.txt');
+plot3(silnikF(:,2),silnikF(:,3),silnikF(:,4)); 
+xlabel('V [cm^3]'); ylabel('p [bar]'); zlabel('T [°K]');
+ grid on;
+%import danych SUWej = silnikUcz(:,3:4)';
+%import danych
+SUWej = silnikUcz(:,3:4)';
+SUWyj = silnikUcz(:,2)';
+STestWej = silnikF(:,3:4)';
+
+%utworzenie sieci 
+net = feedforwardnet([12, 12],'trainlm');
+%graficzny widok struktury sieci 
+view(net);
+%podgląd struktury obiektu 
+net
+%podział danych net.divideParam.trainRatio = 70/100; net.divideParam.valRatio = 15/100; net.divideParam.testRatio = 15/100;
+%uczenie sieci 
+[net,tr] = train(net, SUWej, SUWyj);
+
+
+STestWyj=net(STestWej);
+figure; 
+plot3(silnikF(:,2),silnikF(:,3),silnikF(:,4));
+xlabel('V [cm^3]'); ylabel('p [bar]'); zlabel('T [°K]'); grid on;
+hold on 
+plot3(STestWyj(1,:),STestWej(1,:), STestWej(2,:),'r');
+net=init(net);
+net.name="symulacja silnika, siec 2";
+net.layers{3}.transferFcn='tansig';
+

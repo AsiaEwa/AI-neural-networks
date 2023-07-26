@@ -1,0 +1,42 @@
+load('MDaneUczace.mat'); 
+load('MDaneTestowe.mat');
+%konwertuj dane na macierze komórkowe
+ X = tonndata(MPobUcz,false,false);
+ T = tonndata(MOdpUcz,false,false);
+%ustawienia sieci i metody uczenia 
+maxDelay = 2; 
+inputDelays = 1:maxDelay; 
+feedbackDelays = 1:maxDelay;
+ hiddenLayerSize = 10; 
+trainFcn = 'trainlm'; 
+%utworzenie sieci typu NARX 
+net = narxnet(inputDelays,feedbackDelays,hiddenLayerSize,'open',trainFcn);
+%ustawienia uczenia 
+net.trainParam.epochs=5000; 
+net.divideParam.trainRatio = 70/100; 
+net.divideParam.valRatio = 15/100;
+net.divideParam.testRatio = 15/100;
+
+%przygotowanie danych dla sieci NARX 
+%(opóźniony sygnał wejściowy, stany początkowe sygnałów na wejściach 
+%opóźnionych, stany początkowe sygnałów ze sprzężenia zwrotnego, 
+%opóźniony sygnał wzorcowy zastępujący sygnały ze sprzęża zwrotnego) 
+[x,xi,ai,t] = preparets(net,X,{},T);
+
+%uczenie sieci 
+[net,tr] = train(net,x,t,xi,ai);
+%struktura sieci 
+view(net)
+%testowanie sieci 
+y = net(x,xi,ai); 
+performance = perform(net,t,y)
+%przygotowanie i testowanie sieci z zamkniętym sprzężeniem zwrotnym 
+netc = closeloop(net); 
+netc.name = [net.name ' - Closed Loop']; 
+view(netc) 
+[xc,xic,aic,tc] = preparets(netc,X,{},T);
+yc = netc(xc,xic,aic); 
+closedLoopPerformance = perform(net,tc,yc)
+
+
+

@@ -1,0 +1,15 @@
+zestaw=3;
+dt=MCzasTest(2)-MCzasTest(1);
+ X = tonndata(MPobTest(:,zestaw),false,false); 
+%inicjalizacja Y zerami 
+Y = tonndata(zeros(size(MOdpTest(:,zestaw))),false,false); [xc,xic,aic] = preparets(netc,X,{},Y); yc=netc(xc,xic,aic);
+figure; subplot(2,1,1); 
+plot(MCzasTest,MPobTest(:,zestaw)); 
+grid on; 
+legend('Pobudzenie'); 
+subplot(2,1,2); 
+plot(MCzasTest(1:length(yc))+(maxDelay)*dt,cell2mat(yc));
+ hold on;
+ plot(MCzasTest,MOdpTest(:,zestaw)); 
+grid on; 
+legend('Wyjscie z sieci','Wyjscie oryginalnego obiektu');

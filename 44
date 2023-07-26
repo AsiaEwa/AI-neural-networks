@@ -1,0 +1,4 @@
+A=imread('gln_koty.png');
+imshow(A)
+label=classify(glnet,A);
+text(10,-10,char(label));
